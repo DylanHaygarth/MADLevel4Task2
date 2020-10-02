@@ -15,5 +15,5 @@
     <string name="draw_label">Draw!</string>
     <string name="game_history_text">Game history</string>
     <string name="delete_text">Delete</string>
-
+    <string name="statistics">Win: %d Draw: %d Lose: %d</string>
 </resources>

@@ -11,13 +11,21 @@ import com.example.madlevel4task2.R
 import com.example.madlevel4task2.model.Game
 import com.example.madlevel4task2.model.Moves
 import com.example.madlevel4task2.model.Results
+import com.example.madlevel4task2.repository.GameRepository
 import kotlinx.android.synthetic.main.fragment_game.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.Instant
 import java.util.*
 
 val games = arrayListOf<Game>()
 
 class GameFragment : Fragment() {
+    private lateinit var gameRepository: GameRepository
+    private val mainScope = CoroutineScope(Dispatchers.Main)
+
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
@@ -35,6 +43,8 @@ class GameFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initViews () {
+        gameRepository = GameRepository(requireContext())
+
         chooseButton()
     }
 
@@ -111,7 +121,15 @@ class GameFragment : Fragment() {
         // sets the correct display text
         setResultsText(result)
 
-        var game = Game(result, selectionPlayer, selectionComp, Date.from(Instant.now()))
-        games.add(game)
+        mainScope.launch {
+            var game = Game(result, selectionPlayer, selectionComp, Date.from(Instant.now()))
+
+            withContext(Dispatchers.IO) {
+                gameRepository.insertGame(game)
+
+//                // updates statistics
+//                tvStats.text = getString(R.string.statistics, gameRepository.getWins(), gameRepository.getLosses(), gameRepository.getDraws())
+            }
+        }
     }
 }

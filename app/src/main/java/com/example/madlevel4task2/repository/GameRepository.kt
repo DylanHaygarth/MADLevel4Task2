@@ -5,7 +5,7 @@ import com.example.madlevel4task2.dao.GameDao
 import com.example.madlevel4task2.database.GameDatabase
 import com.example.madlevel4task2.model.Game
 
-class ProductRepository(context: Context) {
+class GameRepository(context: Context) {
     private val gameDao: GameDao
 
     init {
@@ -16,12 +16,15 @@ class ProductRepository(context: Context) {
         gameDao = database!!.gameDao()
     }
 
-    suspend fun getAllProducts(): List<Game> = gameDao.getAllGames()
+    suspend fun getAllGames(): List<Game> = gameDao.getAllGames()
 
-    suspend fun insertProduct(game: Game) = gameDao.insertGame(game)
+    suspend fun insertGame(game: Game) = gameDao.insertGame(game)
 
-    suspend fun deleteProduct(game: Game) = gameDao.deleteGame(game)
+    suspend fun deleteAllGames() = gameDao.deleteAllGames()
 
-    suspend fun deleteAllProducts() = gameDao.deleteAllGames()
+    suspend fun getWins() = gameDao.getWins()
 
+    suspend fun getLosses() = gameDao.getLosses()
+
+    suspend fun getDraws() = gameDao.getDraws()
 }
