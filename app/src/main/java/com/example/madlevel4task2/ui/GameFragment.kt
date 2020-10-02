@@ -1,24 +1,23 @@
 package com.example.madlevel4task2.ui
 
+import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.navigation.fragment.findNavController
+import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 import com.example.madlevel4task2.R
+import com.example.madlevel4task2.model.Game
+import com.example.madlevel4task2.model.Moves
+import com.example.madlevel4task2.model.Results
 import kotlinx.android.synthetic.main.fragment_game.*
+import java.time.Instant
 import java.util.*
 
-const val ROCK = R.drawable.rock
-const val PAPER = R.drawable.paper
-const val SCISSORS = R.drawable.scissors
+val games = arrayListOf<Game>()
 
 class GameFragment : Fragment() {
-    private var selectionPlayer : Int = 0
-
-
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
@@ -27,67 +26,92 @@ class GameFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_game, container, false)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initViews()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun initViews () {
         chooseButton()
     }
 
     // displays rock, paper or scissors based on button clicked
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun chooseButton () {
         btn_rock.setOnClickListener {
-            selectionPlayer = ROCK
-            ivPlayer.setImageResource(selectionPlayer)
-            computerGeneration()
+            createGame(Moves.ROCK)
         }
 
         btn_paper.setOnClickListener {
-            selectionPlayer = PAPER
-            ivPlayer.setImageResource(selectionPlayer)
-            computerGeneration()
+            createGame(Moves.PAPER)
         }
 
         btn_scissors.setOnClickListener {
-            selectionPlayer = SCISSORS
-            ivPlayer.setImageResource(selectionPlayer)
-            computerGeneration()
+            createGame(Moves.SCISSORS)
+        }
+    }
+
+    // finds correct image ID belonging to the selected move
+    private fun setImage (selectionPlayer : Moves) : Int {
+
+        return when (selectionPlayer) {
+            Moves.ROCK -> R.drawable.rock
+            Moves.PAPER -> R.drawable.paper
+            Moves.SCISSORS -> R.drawable.scissors
+        }
+    }
+
+    // changes the text based on the given result
+    private fun setResultsText (result: Results) {
+        when (result) {
+            Results.DRAW -> tvResult.text = getString(R.string.draw_label)
+            Results.LOSE -> tvResult.text = getString(R.string.lose_label)
+            Results.WIN -> tvResult.text = getString(R.string.win_label)
         }
     }
 
     // chooses randomly for the computer and calculates the result
-    private fun computerGeneration () {
-        val list = listOf(R.drawable.rock, R.drawable.scissors, R.drawable.paper)
-        var selectionComp = list.random()
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createGame (selectionPlayer: Moves) {
+        var selectionComp = Moves.values().random()
+        var result: Results
 
-        ivComputer.setImageResource(selectionComp)
+        // sets the image based on selected button (rock, paper or scissors)
+        ivPlayer.setImageResource(setImage(selectionPlayer))
+        ivComputer.setImageResource(setImage(selectionComp))
 
         // calculates the results
         when (selectionPlayer) {
-            ROCK -> {
-                when (selectionComp) {
-                    ROCK -> tvResult.text = getString(R.string.draw_label)
-                    SCISSORS -> tvResult.text = getString(R.string.lose_label)
-                    else -> tvResult.text = getString(R.string.win_label)
+            Moves.ROCK -> {
+                result = when (selectionComp) {
+                    Moves.ROCK -> Results.DRAW
+                    Moves.SCISSORS -> Results.LOSE
+                    else -> Results.WIN
                 }
             }
-            PAPER -> {
-                when (selectionComp) {
-                    ROCK -> tvResult.text = getString(R.string.win_label)
-                    SCISSORS -> tvResult.text = getString(R.string.lose_label)
-                    else -> tvResult.text = getString(R.string.draw_label)
+            Moves.PAPER -> {
+                result = when (selectionComp) {
+                    Moves.ROCK -> Results.WIN
+                    Moves.SCISSORS -> Results.LOSE
+                    else -> Results.DRAW
                 }
             }
-            SCISSORS -> {
-                when (selectionComp) {
-                    ROCK -> tvResult.text = getString(R.string.lose_label)
-                    SCISSORS -> tvResult.text = getString(R.string.draw_label)
-                    else -> tvResult.text = getString(R.string.win_label)
+            Moves.SCISSORS -> {
+                result = when (selectionComp) {
+                    Moves.ROCK -> Results.LOSE
+                    Moves.SCISSORS -> Results.DRAW
+                    else -> Results.WIN
                 }
             }
         }
+
+        // sets the correct display text
+        setResultsText(result)
+
+        var game = Game(result, selectionPlayer, selectionComp, Date.from(Instant.now()))
+        games.add(game)
     }
 }

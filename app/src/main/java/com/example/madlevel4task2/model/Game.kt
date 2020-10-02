@@ -18,5 +18,5 @@ data class Game (
     var result: Results,
     var playerMoves: Moves,
     var computerMoves: Moves,
-    var data: Date
+    var date: Date
 )
