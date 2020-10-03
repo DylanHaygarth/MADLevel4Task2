@@ -126,10 +126,9 @@ class GameFragment : Fragment() {
 
             withContext(Dispatchers.IO) {
                 gameRepository.insertGame(game)
-
-//                // updates statistics
-//                tvStats.text = getString(R.string.statistics, gameRepository.getWins(), gameRepository.getLosses(), gameRepository.getDraws())
             }
+            // updates statistics
+            tvStats.text = getString(R.string.statistics, gameRepository.getWins(), gameRepository.getDraws(), gameRepository.getLosses())
         }
     }
 }
