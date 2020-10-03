@@ -45,6 +45,11 @@ class GameFragment : Fragment() {
     private fun initViews () {
         gameRepository = GameRepository(requireContext())
 
+        mainScope.launch {
+            // initiate statistics
+            tvStats.text = getString(R.string.statistics, gameRepository.getWins(), gameRepository.getDraws(), gameRepository.getLosses())
+        }
+
         chooseButton()
     }
 

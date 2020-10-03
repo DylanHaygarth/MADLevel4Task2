@@ -7,13 +7,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.madlevel4task2.R
 import com.example.madlevel4task2.model.Game
 import com.example.madlevel4task2.model.Moves
+import com.example.madlevel4task2.model.Results
 import kotlinx.android.synthetic.main.item_game.view.*
 
 class GameAdapter(private val games: List<Game>) : RecyclerView.Adapter<GameAdapter.ViewHolder>() {
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun databind(game: Game) {
-            itemView.tvResult.text = game.result.name
             itemView.tvDate.text = game.date.toString()
+            itemView.tvResult.text = game.result.name
 
             var compImageID : Int = when (game.computerMoves) {
                 Moves.ROCK -> R.drawable.rock

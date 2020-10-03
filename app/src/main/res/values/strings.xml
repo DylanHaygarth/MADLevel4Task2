@@ -13,6 +13,7 @@
     <string name="win_label">You win!</string>
     <string name="lose_label">You lose!</string>
     <string name="draw_label">Draw!</string>
+    <string name="lose_label_history">Computer wins!</string>
     <string name="game_history_text">Game history</string>
     <string name="delete_text">Delete</string>
     <string name="statistics">Win: %d Draw: %d Lose: %d</string>
